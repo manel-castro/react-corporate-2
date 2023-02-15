@@ -2,7 +2,7 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "jsx": "react",
-    "module": "ES6",
+    "module": "es6",
     "target": "ES5",
     "lib": [
       "ES2015",

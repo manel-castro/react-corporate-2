@@ -1,15 +1,20 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
-  mode: "production",
+  mode: "development",
   entry: "./src/index.tsx", // main js
-  // devtool: "eval-source-map",
+  devtool: "source-map",
+  stats: { warnings: false },
+
   output: {
     path: path.resolve(__dirname, "dist"), // output folder
     publicPath: "/",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
+  },
+  devServer: {
+    historyApiFallback: true,
   },
   module: {
     rules: [
@@ -23,7 +28,12 @@ module.exports = {
         use: [
           "style-loader",
           "css-loader", // for styles
+          "postcss-loader",
         ],
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        type: "asset",
       },
     ],
   },
