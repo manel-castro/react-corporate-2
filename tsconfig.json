@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "jsx": "react",
+    "module": "ES6",
+    "target": "ES5",
+    "lib": [
+      "ES2015",
+      "ES2016",
+      "ES2017",
+      "ES2018",
+      "ES2019",
+      "ES2020",
+      "ESNext",
+      "dom"
+    ],
+
+    "noEmit": false, // TS WON'T BE THE COPILER, IT WILL BE BABEL
+    "sourceMap": true,
+    "outDir": "./built",
+
+    // Strict type-checking options
+    "strict": true,
+    "noImplicitAny": true, // not allow any's on type-checking
+    "strictNullChecks": true,
+
+    // Module resolution options
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "./src/**/*",
+    "src/custsom.d.ts",
+    "src copy/custom.d.ts",
+    "src/.LoadingLogo.tsx"
+  ]
+}
