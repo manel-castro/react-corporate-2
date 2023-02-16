@@ -25,6 +25,7 @@ import {
   getDocs,
   doc,
   setDoc,
+  getDoc,
 } from "firebase/firestore/lite";
 
 export const db = getFirestore(app);
@@ -73,9 +74,20 @@ export async function updateCollection({
     }
   );
 
-  return { docRef, newValue };
+  return { id: docRef.id, data: newValue };
 }
 
-// Add a new document in collection "cities"
+export async function getDocumentById({
+  db,
+  collectionName,
+  docId,
+}: {
+  db: any;
+  collectionName: string;
+  docId: string;
+}) {
+  const docRef = doc(db, collectionName, docId);
+  const documentSnap = await getDoc(docRef);
 
-// getCollection(db, "cities");
+  return documentSnap?.data();
+}

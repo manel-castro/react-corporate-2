@@ -1,6 +1,11 @@
 import { matchSorter } from "match-sorter";
 
-import { db, getCollection, updateCollection } from "./firestore";
+import {
+  db,
+  getCollection,
+  getDocumentById,
+  updateCollection,
+} from "./firestore";
 
 interface ContactInterface {
   id: string;
@@ -42,22 +47,32 @@ export async function createContact() {
   return contact;
 }
 
-// export async function getContact(id) {
-//   await fakeNetwork(`contact:${id}`);
-//   let contacts = await localforage.getItem("contacts");
-//   let contact = contacts.find((contact: any) => contact.id === id);
-//   return contact ?? null;
-// }
+export async function getContact(id: string) {
+  await fakeNetwork(`contact:${id}`);
+  let contact = await getDocumentById({
+    db,
+    collectionName: COLLECTION_NAME,
+    docId: id,
+  });
 
-// export async function updateContact(id, updates) {
-//   await fakeNetwork();
-//   let contacts = await localforage.getItem("contacts");
-//   let contact = contacts.find((contact) => contact.id === id);
-//   if (!contact) throw new Error("No contact found for", id);
-//   Object.assign(contact, updates);
-//   await set(contacts);
-//   return contact;
-// }
+  return contact ?? null;
+}
+
+export async function updateContact(
+  id: string,
+  updates: { [key: string]: any }
+) {
+  await fakeNetwork();
+
+  const contact = await updateCollection({
+    db,
+    collectionName: COLLECTION_NAME,
+    docId: id,
+    newValue: updates,
+  });
+
+  return contact;
+}
 
 // export async function deleteContact(id) {
 //   let contacts = await localforage.getItem("contacts");

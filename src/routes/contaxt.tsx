@@ -1,7 +1,20 @@
 import React from "react";
-import { Form } from "react-router-dom";
+import { Form, useLoaderData } from "react-router-dom";
+import { getContact } from "../helpers/contacts-db-helpers";
+
+export const loaderContact = async ({ params }: any) => {
+  console.log(params);
+
+  const contact = await getContact(params.contactId);
+
+  console.log("contact: ", contact);
+
+  return { contact };
+};
 
 export default function Contact() {
+  const { contact: _contact } = useLoaderData() as any;
+  console.log("contact before:", _contact);
   const contact = {
     first: "Your",
     last: "Name",
@@ -9,7 +22,9 @@ export default function Contact() {
     twitter: "your_handle",
     notes: "Some notes",
     favorite: true,
+    ..._contact,
   };
+  console.log("contact after:", contact);
 
   return (
     <div id="contact">

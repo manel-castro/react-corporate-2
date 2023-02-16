@@ -4,7 +4,27 @@ import { Outlet, Link, useLoaderData, Form } from "react-router-dom";
 
 import "./root.css";
 
+import { createContact, getContacts } from "../helpers/contacts-db-helpers";
+
+export const contactsLoader = async ({ ...args }) => {
+  console.log("loader args: ", args);
+
+  const contacts = await getContacts();
+  return { contacts };
+};
+
+export async function contactAction({ ...args }) {
+  console.log("contactAction:", args);
+
+  const contact = await createContact();
+  return { contact };
+  return null;
+}
+
 export default function Root() {
+  const { contacts } = useLoaderData() as any;
+  console.log("contacts: ", contacts);
+
   return (
     <>
       <div id="sidebar">
@@ -28,6 +48,7 @@ export default function Root() {
         </div>
         <nav>
           <ul>
+            example contacts
             <li>
               {/* Avoids rerendering the whole document, and takes advantage of Client Side Routing */}
               <Link to={`/contacts/1`}>Your Name</Link>
@@ -35,7 +56,30 @@ export default function Root() {
             <li>
               <a href={`/contacts/2`}>Your Friend</a>
             </li>
+            end example contacts
           </ul>
+          {contacts.length ? (
+            <ul>
+              {contacts.map((contact: any) => (
+                <li key={contact.id}>
+                  <Link to={`contacts/${contact.data.id}`}>
+                    {contact.data.first || contact.data.last ? (
+                      <>
+                        {contact.data.first} {contact.data.last}
+                      </>
+                    ) : (
+                      <i>No Name</i>
+                    )}{" "}
+                    {contact.data.favorite && <span>★</span>}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              <i>No contacts</i>
+            </p>
+          )}
         </nav>
       </div>
       {/* This outlet for where we render childrens */}
