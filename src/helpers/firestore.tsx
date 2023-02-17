@@ -26,7 +26,9 @@ import {
   doc,
   setDoc,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore/lite";
+import { validateLocaleAndSetLanguage } from "typescript";
 
 export const db = getFirestore(app);
 
@@ -90,4 +92,20 @@ export async function getDocumentById({
   const documentSnap = await getDoc(docRef);
 
   return documentSnap?.data();
+}
+
+export async function deleteDocumentById({
+  db,
+  collectionName,
+  docId,
+}: {
+  db: any;
+  collectionName: string;
+  docId: string;
+}) {
+  const docRef = doc(db, collectionName, docId);
+
+  console.log("dbg123 docRef: ", docRef);
+
+  await deleteDoc(docRef);
 }

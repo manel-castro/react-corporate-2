@@ -2,6 +2,7 @@ import { matchSorter } from "match-sorter";
 
 import {
   db,
+  deleteDocumentById,
   getCollection,
   getDocumentById,
   updateCollection,
@@ -74,16 +75,20 @@ export async function updateContact(
   return contact;
 }
 
-// export async function deleteContact(id) {
-//   let contacts = await localforage.getItem("contacts");
-//   let index = contacts.findIndex((contact) => contact.id === id);
-//   if (index > -1) {
-//     contacts.splice(index, 1);
-//     await set(contacts);
-//     return true;
-//   }
-//   return false;
-// }
+export async function deleteContact(id: string) {
+  deleteDocumentById({ docId: id, db, collectionName: COLLECTION_NAME });
+
+  // return true;
+
+  // let contacts = await localforage.getItem("contacts");
+  // let index = contacts.findIndex((contact) => contact.id === id);
+  // if (index > -1) {
+  //   contacts.splice(index, 1);
+  //   await set(contacts);
+  //   return true;
+  // }
+  // return false;
+}
 
 // function set(contacts) {
 //   return localforage.setItem("contacts", contacts);

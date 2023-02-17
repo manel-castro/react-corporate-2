@@ -1,15 +1,16 @@
 import React from "react";
 import Root, { contactAction, contactsLoader } from "./routes/root";
 import { createRoot } from "react-dom/client";
-import App from "./app";
+
 import "./index.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./ErrorPage";
 import Contact, { loaderContact } from "./routes/contaxt";
-import { db, getCollection } from "./helpers/firestore";
-import { createContact } from "./helpers/contacts-db-helpers";
+import { db, deleteDocumentById, getCollection } from "./helpers/firestore";
+import { COLLECTION_NAME, createContact } from "./helpers/contacts-db-helpers";
 import EditContact, { editContactAction } from "./routes/EditContact";
+import { deleteContactAction } from "./routes/DeleteContact";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,13 @@ const router = createBrowserRouter([
         element: <EditContact />,
         loader: loaderContact,
         action: editContactAction,
+      },
+      {
+        path: "contacts/:contactId/destroy",
+
+        action: deleteContactAction,
+        // The error is encapsulated to the route
+        errorElement: <div>Ooops! Couldn't complete this action </div>,
       },
     ],
   },

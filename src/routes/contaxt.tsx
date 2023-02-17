@@ -60,6 +60,7 @@ export default function Contact() {
           </Form>
           <Form
             method="post"
+            // destroy will submit the form to contact/:contactId/destroy when clicked.
             action="destroy"
             onSubmit={(event) => {
               if (!confirm("Please confirm you want to delete this record.")) {
