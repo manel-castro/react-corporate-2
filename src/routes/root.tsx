@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   Outlet,
@@ -8,17 +8,22 @@ import {
   redirect,
   NavLink,
   useNavigation,
+  useSubmit,
 } from "react-router-dom";
 
 import "./root.css";
 
 import { createContact, getContacts } from "../helpers/contacts-db-helpers";
 
-export const contactsLoader = async ({ ...args }) => {
-  console.log("loader args: ", args);
+export const contactsLoader = async ({ request }: any) => {
+  console.log("root loader request: ", request);
 
-  const contacts = await getContacts();
-  return { contacts };
+  const url = new URL(request.url);
+  const q = url.searchParams.get("q");
+
+  const contacts = await getContacts(q);
+
+  return { contacts, q };
 };
 
 export async function contactAction({ ...args }) {
@@ -29,27 +34,51 @@ export async function contactAction({ ...args }) {
 }
 
 export default function Root() {
-  const { contacts } = useLoaderData() as any;
+  const navigation = useNavigation();
+
+  const { contacts, q } = useLoaderData() as any;
+
   console.log("contacts: ", contacts);
 
-  const navigation = useNavigation();
+  useEffect(() => {
+    //this solves going back button for search input
+    (document.getElementById("q") as HTMLInputElement).value = q;
+  }, [q]);
+
+  const submit = useSubmit();
 
   return (
     <>
       <div id="sidebar">
         <h1>React Router Contacts</h1>
         <div>
-          <form id="search-form" role="search">
+          <Form
+            id="search-form"
+            role="search"
+            replace={q != null}
+            // Since method is get it gets the page again with the new URL, as URLSearchParams
+            // By using 'Form' instead of 'form' we capture that get request for being used as Client Side Routing
+            // method="post
+            method="get"
+          >
             <input
               id="q"
               aria-label="Search contacts"
               placeholder="Search"
               type="search"
               name="q"
+              // refresh page keeps state of URL
+              defaultValue={q}
+              onChange={(event) => {
+                const isFirstSearch = q == null;
+                submit(event.currentTarget.form, {
+                  replace: !isFirstSearch,
+                });
+              }}
             />
             <div id="search-spinner" aria-hidden hidden={true} />
             <div className="sr-only" aria-live="polite"></div>
-          </form>
+          </Form>
           {/* It controls the post method from inside router, so that info can be managed without whole document rerenderings: it trigers an action event into Root route */}
           <Form method="post">
             <button type="submit">New</button>

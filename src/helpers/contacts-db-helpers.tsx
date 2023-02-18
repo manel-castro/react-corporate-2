@@ -1,4 +1,5 @@
 import { matchSorter } from "match-sorter";
+import { validateLocaleAndSetLanguage } from "typescript";
 
 import {
   db,
@@ -26,7 +27,9 @@ export async function getContacts(query?: any) {
   let contacts = await getCollection({ db, collectionName: COLLECTION_NAME });
   if (!contacts) contacts = [];
   if (query) {
-    contacts = matchSorter(contacts, query, { keys: ["first", "last"] });
+    contacts = matchSorter(contacts, query, {
+      keys: ["data.first", "data.last"],
+    });
   }
   return contacts.sort((a, b) => a.data.createdAt - b.data.createdAt);
 }
@@ -65,12 +68,17 @@ export async function updateContact(
 ) {
   await fakeNetwork();
 
+  console.log("dbg125 id: ", id);
+  console.log("dbg125 updates: ", updates);
+
   const contact = await updateCollection({
     db,
     collectionName: COLLECTION_NAME,
     docId: id,
     newValue: updates,
   });
+
+  console.log("dbg125 updated contact", contact);
 
   return contact;
 }
@@ -101,20 +109,17 @@ async function fakeNetwork(key?: string) {
   if (!key) {
     fakeCache = {};
   }
-
   if (key && fakeCache[key]) {
     return;
   }
-
   // start coded by me
   if (!key)
     return new Promise((res) => {
-      setTimeout(res, Math.random() * 800);
+      setTimeout(res, Math.random() * 1800);
     });
   // end coded by me
-
   fakeCache[key] = true;
   return new Promise((res) => {
-    setTimeout(res, Math.random() * 800);
+    setTimeout(res, Math.random() * 1800);
   });
 }

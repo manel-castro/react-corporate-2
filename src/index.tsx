@@ -6,11 +6,12 @@ import "./index.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./ErrorPage";
-import Contact, { loaderContact } from "./routes/contaxt";
+import Contact, { favoriteAction, loaderContact } from "./routes/contaxt";
 import { db, deleteDocumentById, getCollection } from "./helpers/firestore";
 import { COLLECTION_NAME, createContact } from "./helpers/contacts-db-helpers";
 import EditContact, { editContactAction } from "./routes/EditContact";
 import { deleteContactAction } from "./routes/DeleteContact";
+import Index from "./routes";
 
 const router = createBrowserRouter([
   {
@@ -23,22 +24,31 @@ const router = createBrowserRouter([
     // Actions Better documented: https://reactrouter.com/en/main/route/action
     children: [
       {
-        path: "contacts/:contactId",
-        element: <Contact />,
-        loader: loaderContact,
-      },
-      {
-        path: "contacts/:contactId/edit",
-        element: <EditContact />,
-        loader: loaderContact,
-        action: editContactAction,
-      },
-      {
-        path: "contacts/:contactId/destroy",
+        errorElement: <ErrorPage />,
+        children: [
+          { index: true, element: <Index /> },
+          {
+            path: "contacts/:contactId",
+            element: <Contact />,
+            loader: loaderContact,
+            // favorite click action, components populate actions of parent routes.
+            // favorites action has no navigation implied since we use fetcher.Form
+            action: favoriteAction,
+          },
+          {
+            path: "contacts/:contactId/edit",
+            element: <EditContact />,
+            loader: loaderContact,
+            action: editContactAction,
+          },
+          {
+            path: "contacts/:contactId/destroy",
 
-        action: deleteContactAction,
-        // The error is encapsulated to the route
-        errorElement: <div>Ooops! Couldn't complete this action </div>,
+            action: deleteContactAction,
+            // The error is encapsulated to the route
+            errorElement: <div>Ooops! Couldn't complete this action </div>,
+          },
+        ],
       },
     ],
   },
