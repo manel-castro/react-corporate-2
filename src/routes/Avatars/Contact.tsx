@@ -5,7 +5,7 @@ import {
   useFetcher,
   ActionFunction,
 } from "react-router-dom";
-import { getContact, updateContact } from "../helpers/contacts-db-helpers";
+import { getContact, updateContact } from "../../database/contacts-db";
 
 export const loaderContact = async ({ params }: any) => {
   console.log(params);

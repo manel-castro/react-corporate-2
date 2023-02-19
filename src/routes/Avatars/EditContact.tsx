@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
-import { updateContact } from "../helpers/contacts-db-helpers";
+import { updateContact } from "../../database/contacts-db";
 
 export const editContactAction = async ({ params, request }: any) => {
   console.log("editContactAction args, ", { params, request });

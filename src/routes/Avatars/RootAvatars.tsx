@@ -11,9 +11,9 @@ import {
   useSubmit,
 } from "react-router-dom";
 
-import "./root.css";
+import "./RootAvatars.css";
 
-import { createContact, getContacts } from "../helpers/contacts-db-helpers";
+import { createContact, getContacts } from "../../database/contacts-db";
 
 export const contactsLoader = async ({ request }: any) => {
   console.log("root loader request: ", request);
@@ -33,7 +33,7 @@ export async function contactAction({ ...args }) {
   return redirect(`/contacts/${contact.id}/edit`);
 }
 
-export default function Root() {
+export default function RootAvatars() {
   const navigation = useNavigation();
 
   const { contacts, q } = useLoaderData() as any;
@@ -85,23 +85,12 @@ export default function Root() {
           </Form>
         </div>
         <nav>
-          <ul>
-            example contacts
-            <li>
-              {/* Avoids rerendering the whole document, and takes advantage of Client Side Routing */}
-              <Link to={`/contacts/1`}>Your Name</Link>
-            </li>
-            <li>
-              <a href={`/contacts/2`}>Your Friend</a>
-            </li>
-            end example contacts
-          </ul>
           {contacts.length ? (
             <ul>
               {contacts.map((contact: any) => (
                 <li key={contact.id}>
                   <NavLink
-                    to={`contacts/${contact.data.id}`}
+                    to={`/avatars/${contact.data.id}`}
                     className={({ isActive, isPending }) => {
                       return isActive ? "active" : isPending ? "pending" : "";
                     }}
@@ -128,7 +117,12 @@ export default function Root() {
       {/* This outlet for where we render childrens */}
       <div
         id="detail"
-        className={navigation.state === "loading" ? "loading" : ""}
+        className={
+          navigation.location?.pathname.includes("avatars") &&
+          navigation.state === "loading"
+            ? "loading"
+            : ""
+        }
       >
         <Outlet></Outlet>
       </div>

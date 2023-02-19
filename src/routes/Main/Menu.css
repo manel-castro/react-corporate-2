@@ -1,0 +1,9 @@
+.menu-active {
+  background-color: red;
+}
+.menu-inactive {
+  background-color: green;
+}
+.menu-loading {
+  background-color: orange;
+}

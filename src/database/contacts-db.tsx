@@ -20,11 +20,14 @@ interface ContactInterface {
   favorite?: boolean;
 }
 
-export const COLLECTION_NAME = "contacts";
+export const CONTACTS_COLLECTION_NAME = "contacts";
 
 export async function getContacts(query?: any) {
   await fakeNetwork(`getContacts:${query}`);
-  let contacts = await getCollection({ db, collectionName: COLLECTION_NAME });
+  let contacts = await getCollection({
+    db,
+    collectionName: CONTACTS_COLLECTION_NAME,
+  });
   if (!contacts) contacts = [];
   if (query) {
     contacts = matchSorter(contacts, query, {
@@ -41,7 +44,7 @@ export async function createContact() {
 
   updateCollection({
     db,
-    collectionName: COLLECTION_NAME,
+    collectionName: CONTACTS_COLLECTION_NAME,
     docId: id,
     newValue: contact,
   });
@@ -55,7 +58,7 @@ export async function getContact(id: string) {
   await fakeNetwork(`contact:${id}`);
   let contact = await getDocumentById({
     db,
-    collectionName: COLLECTION_NAME,
+    collectionName: CONTACTS_COLLECTION_NAME,
     docId: id,
   });
 
@@ -73,7 +76,7 @@ export async function updateContact(
 
   const contact = await updateCollection({
     db,
-    collectionName: COLLECTION_NAME,
+    collectionName: CONTACTS_COLLECTION_NAME,
     docId: id,
     newValue: updates,
   });
@@ -84,7 +87,11 @@ export async function updateContact(
 }
 
 export async function deleteContact(id: string) {
-  deleteDocumentById({ docId: id, db, collectionName: COLLECTION_NAME });
+  deleteDocumentById({
+    docId: id,
+    db,
+    collectionName: CONTACTS_COLLECTION_NAME,
+  });
 
   // return true;
 
