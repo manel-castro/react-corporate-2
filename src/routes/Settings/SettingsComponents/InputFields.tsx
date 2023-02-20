@@ -1,15 +1,18 @@
 import React from "react";
 import { useFetcher } from "react-router-dom";
 
-export interface InputFieldType {
+export interface InputFieldType<T> {
   label: string;
-  name: string;
-  idFirebase: string;
+  name: T;
   defaultValue: string;
   placeholder: string;
 }
 
-export default function InputFields({ inputs }: { inputs: InputFieldType[] }) {
+export default function InputFields({
+  inputs,
+}: {
+  inputs: InputFieldType<string>[];
+}) {
   const fetcher = useFetcher();
 
   return (

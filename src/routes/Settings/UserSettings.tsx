@@ -4,26 +4,35 @@ import {
   LoaderFunction,
   useLoaderData,
 } from "react-router-dom";
-import { validateLocaleAndSetLanguage } from "typescript";
-import { getUserSettings } from "../../database/user-settings-db";
+import {
+  getUserSettings,
+  updateUserSettings,
+} from "../../database/user-settings-db";
 import InputFields, { InputFieldType } from "./SettingsComponents/InputFields";
 
-const defaultInputs: { [key: string]: InputFieldType } = {
-  ["first-name"]: {
+enum InputFieldOptions {
+  firstName = "first-name",
+  lastName = "last-name",
+}
+
+const defaultInputs: {
+  [Property in InputFieldOptions]: InputFieldType<InputFieldOptions>;
+} = {
+  [InputFieldOptions.firstName]: {
     label: "First Name",
-    name: "firstName",
-    idFirebase: "last-name",
+    name: InputFieldOptions.firstName,
     defaultValue: "Miguel Angel",
     placeholder: "Input your first name",
   },
-  ["last-name"]: {
+  [InputFieldOptions.lastName]: {
     label: "Last Name",
-    name: "lastName",
-    idFirebase: "last-name",
+    name: InputFieldOptions.lastName,
     defaultValue: "Martinez",
     placeholder: "Input your last name",
   },
 };
+
+const testUser = "xuPWTzWV65SQoX6yJ8Xd";
 
 export const userSettingsLoader: LoaderFunction = async ({
   request,
@@ -32,7 +41,6 @@ export const userSettingsLoader: LoaderFunction = async ({
   ...etc
 }) => {
   // get user from firestore-auth
-  const testUser = "xuPWTzWV65SQoX6yJ8Xd";
 
   const userSettings = await getUserSettings(testUser);
   console.log("dbg128 userSettings: ", userSettings);
@@ -48,23 +56,32 @@ export const userSettingsAction: ActionFunction = async ({
   params,
   context,
 }) => {
-  console.log("dbg127 A userSettingsAction params: ", params);
-  console.log("dbg127 A userSettingsAction request: ", request);
-  console.log("dbg127 A userSettingsAction context: ", context);
+  const formData = await request.formData();
+
+  console.log("dbg127 A userSettingsAction formData: ", formData);
+
+  const updates = Object.fromEntries(formData as any) as {
+    [key: string]: string;
+  };
+
+  console.log("dbg127 A userSettingsAction updates: ", updates);
+
+  const userSettings = await updateUserSettings(testUser, updates);
+
   return null;
 };
 
 export default function UserSettings() {
   const { userSettings } = useLoaderData() as {
-    userSettings: { [key: string]: string };
+    userSettings: { [Property in InputFieldOptions]: string };
   };
 
   console.log("dbg128 userSettings after: ", userSettings);
-  // if (userSettings?.length) {
-  for (const [key, value] of Object.entries(userSettings)) {
-    defaultInputs[key].defaultValue = value;
+
+  for (let [key, value] of Object.entries(userSettings)) {
+    // @ts-ignore
+    if (defaultInputs[key]) defaultInputs[key].defaultValue = value;
   }
-  // }
 
   return <InputFields inputs={Object.values(defaultInputs)} />;
 }
