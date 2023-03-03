@@ -30,7 +30,7 @@ export async function contactAction({ ...args }) {
   console.log("contactAction:", args);
 
   const contact = await createContact();
-  return redirect(`/contacts/${contact.id}/edit`);
+  return redirect(`/avatars/${contact.id}/edit`);
 }
 
 export const menuItems = {

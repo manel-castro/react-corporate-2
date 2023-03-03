@@ -12,7 +12,7 @@ export const editContactAction = async ({ params, request }: any) => {
 
   const contact = updateContact(params.contactId, updates);
 
-  return redirect(`/contacts/${params.contactId}`);
+  return redirect(`/avatars/${params.contactId}`);
 };
 
 export default function EditContact() {

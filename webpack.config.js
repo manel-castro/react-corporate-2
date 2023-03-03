@@ -1,7 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/index.tsx", // main js
   devtool: "source-map",
   stats: { warnings: false },
